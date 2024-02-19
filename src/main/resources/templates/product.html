@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>GIANGShop管理アプリケーション</title>
+    <link rel="stylesheet" th:href="@{/home.css}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="/images/pokemonball.png" type="image/x-icon">
+    <style>
+        table {
+               border-collapse: collapse;
+               background: linear-gradient(0.25turn, #c6ffdd, #fbd786, #f7797d);
+               border-radius: 15px;
+           }
+
+        .input-form {
+            display: inline-block;
+            width: 90%; /* Điều chỉnh chiều rộng theo ý của bạn */
+            margin-right: 50px; /* Điều chỉnh khoảng cách giữa các phần tử */
+        }
+
+        .input-form.btn {
+            width: auto; /* Điều chỉnh chiều rộng phù hợp với nút "登録" */
+        }
+
+        #phongto {
+        transition: all 1s ease;
+        -webkit-transition: all 1s ease;
+        -moz-transition: all 1s ease;
+        -o-transition: all 1s ease;
+        }
+
+        #phongto:hover {
+        transform: scale(5,5);
+        -webkit-transform: scale(5,5);
+        -moz-transform: scale(5,5);
+        -o-transform: scale(5,5);
+        -ms-transform: scale(5,5);
+        }
+
+        h3 {
+            text-align: center;
+            font-size: 80px;
+            color: pink;
+            background: linear-gradient(0.25turn, #c6ffdd, #fbd786, #f7797d);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        /* Thay đổi màu chữ cho input và span trong form */
+#updateDialog input,
+#updateDialog span {
+    color: transparent;
+    background: linear-gradient(0.25turn, #c6ffdd, #fbd786, #f7797d);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+/* Thay đổi màu chữ khi input hoặc span được focus */
+#updateDialog input:focus,
+#updateDialog span:focus {
+    color: transparent;
+}
+
+/* Thay đổi màu chữ cho các nút trong form */
+#updateDialog input[type="submit"],
+#updateDialog input[type="reset"] {
+    color: #fff; /* Màu chữ cho nút */
+    background-color: #f53677; /* Màu nền cho nút */
+    /* Các thuộc tính khác tùy thuộc vào thiết kế của bạn */
+}
+
+#updateDialog input[type="submit"]:hover {
+    background-color: #ff4584; /* Màu nền hover cho nút */
+}
+
+#updateDialog input[type="reset"]:hover {
+    background-color: #6c757d; /* Màu nền hover cho nút reset */
+}
+
+
+    </style>
+</head>
+<body>
+<nav>
+    <div class="brand">
+        <h2><i class="fas fa-shopping-cart"></i> ShoesShoping管理アプリケーション</h2>
+    </div>
+</nav>
+<div class="tasklist" style="margin-top: -7%;">
+    <h3 style="text-align: center; font-size: 80px color: pink">現在の商品ー覧</h3>
+    <div class="search" style="width: 300px;">
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="ID, 商品 ...で検索" style="width: 100%; padding: 10px; font-size:24px;">
+    </div>
+    <br>
+    <table border="1" style="border: none;">
+        <thead>
+        <tr>
+            <th class="">ID</th>
+            <th>商品</th>
+            <th>写真</th>
+            <th>数</th>
+            <th>残り状態</th>
+            <th>仕入価格</th>
+            <th>コスト</th>
+            <th>編集</th>
+            <th>削除</th>
+        </tr>
+
+        </thead>
+        <tbody>
+        <tr th:each="task : ${taskList}">
+            <td width="40px" class="" th:text="${task.id}"></td>
+            <td width="200px"th:text="${task.task}"></td>
+            <td width="130px">
+                <img id="phongto" alt="code mẫu phóng to ảnh bằng CSS3" th:src="@{'/images/' + ${task.picture}}" th:alt="${task.picture}" style="max-width: 100px; max-height: 100px;">
+            </td>
+            <td width="50px" th:text="${task.number}"></td>
+            <td width="40px" class="" th:text="${task.cost}"></td>
+            <td width="40px" class="" th:text="${task.price}"></td>
+            <td width="50px" th:text="${task.done} ? '完了':'未完了'" style="text-align: center;"></td>
+<!--            <7-->
+            <td width="30px" style="text-align: center;">
+                <button type="submit" id="update_button"
+                        onclick="let row = this.parentElement.parentElement;
+                document.getElementById('update_id').value=row.cells[0].innerText.trim();
+                document.getElementById('update_task').value=row.cells[1].innerText.trim();
+                document.getElementById('update_status').selectedIndex=(row.cells[3].innerText.trim()=='完了')?1:0;
+                document.getElementById('update_number').value=row.cells[3].innerText.trim();
+                document.getElementById('update_cost').value=row.cells[4].innerText.trim();
+                document.getElementById('update_price').value=row.cells[5].innerText.trim();
+                var dialog=document.getElementById('updateDialog');
+                dialog.style.left = ((window.innerWidth - 500) /2) + 'px';
+                dialog.style.display = 'block';" style=" font-size: 20px;">
+                    更新
+                </button>
+            </td>
+            <td width="30px" style="text-align: center;">
+                <form id="deleteForm" action="/delete" method="post">
+                    <button type="button" id="delete_button" onclick="confirmDelete()" style="background-color: red; font-size: 20px;">削除</button>
+                    <input type="hidden" name="id" th:value="${task.id}" />
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h2 style="text-align: right;">
+    <a href="/home" class="btn1">BACK</a>
+</h2>
+
+<section class="section2">
+    <div class="noi-dung">
+        <div class="form">
+            <div class="hidden" id="updateDialog">
+                <div class="task_form">
+                    <h2>商品の更新</h2>
+                    <form action="/update" method="POST">
+                        <input id="update_id" name="id" type="hidden" />
+                        <div class="input-form">
+                            <span>商品</span>
+                            <input id="update_task" name="task" type="text" />
+                        </div>
+                        <div class="input-form">
+                            <span>写真</span>
+                            <input id="update_picture" type="file" name="picture" />
+                        </div>
+<!--                        <div class="input-form">-->
+<!--                            <span>期限</span>-->
+<!--                            <input id="update_deadline" name="deadline" type="date" />-->
+<!--                        </div>-->
+                        <div class="input-form">
+                            <span>状態</span>
+                            <select id="update_status" name="done">
+                                <option value="false">未完了</option>
+                                <option value="true">完了</option>
+                            </select>
+                        </div>
+                        <div class="input-form">
+                            <span>数</span>
+                            <input id="update_number" name="number"/>
+                        </div>
+                        <div class="input-form">
+                            <span>輸入価格</span>
+                            <input id="update_cost" name="cost"/>
+                        </div>
+                        <div class="input-form">
+                            <span>値段</span>
+                            <input id="update_price" name="price"/>
+                        </div>
+                        <div class="input-form btn">
+                            <input type="submit" value="更新">
+                        </div>
+                        <div class="input-form btn">
+                            <input type="reset"onclick="getElementByld('updateDialog').style.display='none';" value="キャンセル">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    function searchTable() {
+      // Lấy giá trị từ ô nhập
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("searchInput");
+      filter = input.value.toUpperCase();
+      table = document.querySelector(".tasklist table");
+      tr = table.getElementsByTagName("tr");
+
+      // Lặp qua từng dòng trong bảng và ẩn hiện dòng tương ứng với kết quả tìm kiếm
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td");
+        for (var j = 0; j < td.length; j++) {
+          if (td[j]) {
+            txtValue = td[j].textContent || td[j].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+              break;
+            } else {
+              tr[i].style.display = "none";
+            }
+          }
+        }
+      }
+    }
+
+</script>
+
+<script>
+    function confirmDelete() {
+        var result = confirm("本当に削除しますか？"); // Hiển thị hộp thoại xác nhận
+        if (result) {
+            // Nếu người dùng chấp nhận (ấn OK), thực hiện xóa
+            document.forms['deleteForm'].submit();
+            window.alert("データが変更されました。");
+        } else {
+            // Nếu người dùng ấn "Hủy bỏ", hiển thị thông báo
+            window.alert("データは保持されています。");
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    background: url(https://media-api.advertisingvietnam.com/oapi/v1/media?uuid=public%2Fwp-content%2Fuploads%2F2019%2F11%2Fgiay-nike-gdragon-9.jpg&resolution=1440x756&type=image);
+    background-size: cover;
+    background: rgba(#344557, .85);
+    font-size: 18px;
+    font-family: "Russo One", arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  text-transform: uppercase;
+  background: linear-gradient(45deg, #f47d0d, #0621e0);
+  letter-spacing: 10px;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  width: 100%;
+  font-size: 5em;
+}
+
+
+
+.gradient-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  margin: -50px 0 0 0;
+}
+
+.gradient-btn {
+    color: #fff;
+    display: inline-block;
+    height: 70px;
+    line-height: 70px;
+    width: 20%;
+    margin: 10px;
+    padding-left: 20px;
+    border-radius: 50px;
+    box-shadow: 5px 5px 2px -2px #a5a5a5;
+    flex: 1 0 21%;
+    text-align: center; /* Đặt chữ ra giữa ô */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-2 {
+    background-image: linear-gradient(
+        to right top,
+        #fab823,
+        #f9a315,
+        #f68d0c,
+        #f3770d,
+        #ee5f13
+    );
+}
+
+.btn-6 {
+    background-image: linear-gradient(
+        to top,
+        #d83f91,
+        #d0409b,
+        #c743a5,
+        #bb47af,
+        #ae4bb8
+    );
+}
+
+.gradient-btn:nth-child(odd):hover {
+    cursor: pointer;
+    box-shadow: -6px -9px 2px -2px #a5a5a5;
+    transition: all 2s ease;
+    transform: translateX(10px);
+}
+
+.gradient-btn:nth-child(even):hover {
+    cursor: pointer;
+    box-shadow: 8px 8px 2px -2px #a5a5a5;
+    transition: all 2s ease;
+    transform: translateX(-10px);
+}
+
+    </style>
+</head>
+<body>
+
+<div class="gradient-buttons">
+    <h1>
+        商品管理WEB
+    </h1>
+    <a href="/register" class="gradient-btn btn-2">
+        <i class="fa fa-bug"></i>
+        <span>商品登録</span>
+    </a>
+    <a href="/product" class="gradient-btn btn-6">
+        <i class="fa fa-reply"></i>
+        <span>商品情報</span>
+    </a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>タスク管理アプリケーション</title>
+    <link rel="stylesheet" th:href="@{/home.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <style>
+        table {
+                   border-collapse: collapse;
+                   background: linear-gradient(0.25turn, #c8f7dc, #b0daec, #98bffb);
+                   border-radius: 15px;
+               }
+
+    </style>
+</head>
+<body>
+<nav>
+    <div class="brand">
+        <h2><i class="fas fa-shopping-cart"></i> 在庫商品管理アプリケーション</h2>
+    </div>
+    <ul>
+        <li><a href="/home"><i class="fa fa-home" aria-hidden="true"></i> HOME</a></li>
+        <li><a href="/list"><i class="fas fa-clipboard-list"></i> LIST</a></li>
+        <li class=""  title="Muốn học giỏi thì bấm vào!!">
+            <a href="/order"><i class="fas fa-spinner fa-pulse"></i></i> My ORDER &#9759;</a>
+        </li>
+        <li><a href="/revenue"><i class="fas fa-money-bill-wave"></i> Revenue</a></li>
+    </ul>
+</nav>
+<div class="tasklist">
+    <h3 style="text-align: center; font-size: 80px">利益表</h3>
+    <div class="search" style="width: 300px;">
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search product..." style="width: 100%; padding: 10px; font-size:24px;">
+    </div>
+    <br>
+    <table border="1" style="border: none;">
+        <thead>
+        <tr>
+            <th class="">ID</th>
+            <th>顧客名</th>
+            <th>アドレス</th>
+            <th>配達料</th>
+            <th>配達日</th>
+            <th>商品</th>
+            <th>利益</th>
+            <th>状態</th>
+            <th>編集</th>
+            <th>削除</th>
+        </tr>
+
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orderList}">
+            <td width="40px" class="" th:text="${order.id}"></td>
+            <td width="150px"th:text="${order.client}"></td>
+            <td width="150px"th:text="${order.address}"></td>
+            <td width="40px" th:text="${order.deliverycost}"></td>
+            <td width="40px" th:text="${order.deliverydate}"></td>
+            <td width="150px"th:text="${order.product}"></td>
+            <td width="30px" style="text-align: right;">
+                <span th:text="${order.revenue + '￥'}"></span>
+            </td>
+            <td width="40px" th:text="${order.done} ? '完了':'未完了'" style="text-align: center;"></td>
+            <td width="30px" style="text-align: center;">
+                <button type="submit" id="update_button"
+                        onclick="let row = this.parentElement.parentElement;
+                document.getElementById('update_id').value=row.cells[0].innerText.trim();
+                document.getElementById('update_client').value=row.cells[1].innerText.trim();
+                document.getElementById('update_delivery').value=row.cells[2].innerText.trim();
+                document.getElementById('update_status').selectedIndex=(row.cells[3].innerText.trim()=='完了')?1:0;
+                var dialog=document.getElementById('updateDialog');
+                dialog.style.left = ((window.innerWidth - 500) /2) + 'px';
+                dialog.style.display = 'block';" style=" font-size: 20px;">
+                    更新
+                </button>
+            </td>
+            <td width="30px" style="text-align: center;">
+                <form action="/deleteorder">
+                    <button type="submit" id="delete_button" style="background-color: red; font-size: 20px;">削除</button>
+                    <input type="hidden" name="id" th:value="${order.id}"/>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<h2 style="text-align: right;">
+    <a href="/order" class="btn1">BACK</a>
+</h2>
+
+
+
+<!--  <div class="" id="updateDialog">-->
+<!--    <h2>タスクの更新</h2>-->
+<!--    <form action="/update">-->
+<!--      <div class="text">-->
+<!--        <label>タスク</label>-->
+<!--        <input name="task" type="text" th:value="${task.task}"/>-->
+<!--        <label>期限</label>-->
+<!--        <input name="deadline" type="date" th:value="${task.deadline}"/>-->
+<!--      </div>-->
+<!--      <div class="btn">-->
+<!--        <button type="button">-->
+<!--          <input type="submit" value="更新"/>-->
+<!--        </button>-->
+<!--      </div>-->
+<!--    </form>-->
+<!--  </div>-->
+
+
+<div class="hidden" id="updateDialog">
+    <div class="task_form">
+        <h2>タスクの更新</h2>
+        <form action="/update">
+            <input id="update_id" name="id" type="hidden" />
+            <label>タスク</label>
+            <input id="update_task" name="task" type="text" />
+            <label>期限</label>
+            <input id="update_deadline" name="deadline" type="date" />
+            <label>状態</label>
+            <select id="update_status" name="done">
+                <option value="false">未完了</option>
+                <option value="true">完了</option>
+            </select>
+            <label>品質状態</label>
+            <select id="update_quantity" name="quantity">
+                <option value="新品">新品</option>
+                <option value="95">95%</option>
+                <option value="90">90%</option>
+                <option value="85">85%</option>
+                <option value="80">80%</option>
+            </select>
+            <label>数</label>
+            <input name="number" type="text"/>
+            <label>輸入価格</label>
+            <input name="cost" type="text"/>
+            <label>値段</label>
+            <input name="price" type="text"/>
+            <div class="btn">
+                <button type="submit">更新</button>
+                <button type="reset"onclick="getElementByld('updateDialog').style.display='none';">
+                    　キャンセル　
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="hotline-phone-ring-wrap">
+    <div class="hotline-phone-ring">
+        <div class="hotline-phone-ring-circle"></div>
+        <div class="hotline-phone-ring-circle-fill"></div>
+        <div class="hotline-phone-ring-img-circle"> <a href="tel:0898982526" class="pps-btn-img"> <img src="https://netweb.vn/img/hotline/icon.png" alt="so dien thoai" width="50"> </a></div>
+    </div>
+    <div class="hotline-bar">
+        <a href="tel:05068729180"> <span class="text-hotline">050 6872 9180</span> </a>
+    </div>
+</div>
+
+
+<div class="float-icon-hotline">
+    <ul class ="left-icon hotline">
+        <li class="hotline_float_icon"><a target="_blank" rel="nofollow" id="messengerButton1" href="https://www.google.com/maps"><i class="fa fa-googlemap animated infinite tada"></i><span>GoogleMap</span></a></li>
+        <li class="hotline_float_icon"><a target="_blank" rel="nofollow" id="messengerButton2" href="https://www.facebook.com/willy99wonka/"><i class="fa fa-facebook animated infinite tada"></i><span>Facebook</span></a></li>
+        <li class="hotline_float_icon"><a target="_blank" rel="nofollow" id="messengerButton3" href="https://www.messenger.com"><i class="fa fa-messenger animated infinite tada"></i><span>Facebook</span></a></li>
+    </ul>
+</div>
+
+<script>
+    function searchTable() {
+      // Lấy giá trị từ ô nhập
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("searchInput");
+      filter = input.value.toUpperCase();
+      table = document.querySelector(".tasklist table");
+      tr = table.getElementsByTagName("tr");
+
+      // Lặp qua từng dòng trong bảng và ẩn hiện dòng tương ứng với kết quả tìm kiếm
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td");
+        for (var j = 0; j < td.length; j++) {
+          if (td[j]) {
+            txtValue = td[j].textContent || td[j].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+              break;
+            } else {
+              tr[i].style.display = "none";
+            }
+          }
+        }
+      }
+    }
+</script>
+
+</body>
+</html>
